@@ -25,21 +25,6 @@ void registerTableFunctionMergeTreeIndex(TableFunctionFactory & factory);
 void registerTableFunctionFuzzJSON(TableFunctionFactory & factory);
 #endif
 
-#if USE_AWS_S3
-void registerTableFunctionS3(TableFunctionFactory & factory);
-void registerTableFunctionS3Cluster(TableFunctionFactory & factory);
-void registerTableFunctionCOS(TableFunctionFactory & factory);
-void registerTableFunctionOSS(TableFunctionFactory & factory);
-void registerTableFunctionGCS(TableFunctionFactory & factory);
-void registerTableFunctionHudi(TableFunctionFactory & factory);
-#if USE_PARQUET
-void registerTableFunctionDeltaLake(TableFunctionFactory & factory);
-#endif
-#if USE_AVRO
-void registerTableFunctionIceberg(TableFunctionFactory & factory);
-#endif
-#endif
-
 #if USE_HDFS
 void registerTableFunctionHDFS(TableFunctionFactory & factory);
 void registerTableFunctionHDFSCluster(TableFunctionFactory & factory);
@@ -72,11 +57,6 @@ void registerTableFunctionDictionary(TableFunctionFactory & factory);
 void registerTableFunctionFormat(TableFunctionFactory & factory);
 
 void registerTableFunctionExplain(TableFunctionFactory & factory);
-
-#if USE_AZURE_BLOB_STORAGE
-void registerTableFunctionAzureBlobStorage(TableFunctionFactory & factory);
-void registerTableFunctionAzureBlobStorageCluster(TableFunctionFactory & factory);
-#endif
 
 void registerTableFunctions();
 

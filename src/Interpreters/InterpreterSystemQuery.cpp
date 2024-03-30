@@ -51,9 +51,7 @@
 #include <Storages/Freeze.h>
 #include <Storages/StorageFactory.h>
 #include <Storages/StorageFile.h>
-#include <Storages/StorageS3.h>
 #include <Storages/StorageURL.h>
-#include <Storages/StorageAzureBlob.h>
 #include <Storages/MaterializedView/RefreshTask.h>
 #include <Storages/HDFS/StorageHDFS.h>
 #include <Storages/System/StorageSystemFilesystemCache.h>
@@ -70,9 +68,6 @@
 #include <Formats/ProtobufSchemas.h>
 #endif
 
-#if USE_AWS_S3
-#include <IO/S3/Client.h>
-#endif
 
 #if USE_JEMALLOC
 #include <Common/Jemalloc.h>
@@ -379,13 +374,6 @@ BlockIO InterpreterSystemQuery::execute()
             throw Exception(ErrorCodes::SUPPORT_IS_DISABLED, "The server was compiled without the support for JIT compilation");
 #endif
         case Type::DROP_S3_CLIENT_CACHE:
-#if USE_AWS_S3
-            getContext()->checkAccess(AccessType::SYSTEM_DROP_S3_CLIENT_CACHE);
-            S3::ClientCacheRegistry::instance().clearCacheForAll();
-            break;
-#else
-            throw Exception(ErrorCodes::SUPPORT_IS_DISABLED, "The server was compiled without the support for AWS S3");
-#endif
 
         case Type::DROP_FILESYSTEM_CACHE:
         {
@@ -488,20 +476,12 @@ BlockIO InterpreterSystemQuery::execute()
 
             if (caches_to_drop.contains("FILE"))
                 StorageFile::getSchemaCache(getContext()).clear();
-#if USE_AWS_S3
-            if (caches_to_drop.contains("S3"))
-                StorageS3::getSchemaCache(getContext()).clear();
-#endif
 #if USE_HDFS
             if (caches_to_drop.contains("HDFS"))
                 StorageHDFS::getSchemaCache(getContext()).clear();
 #endif
             if (caches_to_drop.contains("URL"))
                 StorageURL::getSchemaCache(getContext()).clear();
-#if USE_AZURE_BLOB_STORAGE
-            if (caches_to_drop.contains("AZURE"))
-                StorageAzureBlob::getSchemaCache(getContext()).clear();
-#endif
             break;
         }
         case Type::DROP_FORMAT_SCHEMA_CACHE:

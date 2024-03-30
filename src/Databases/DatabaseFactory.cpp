@@ -1,3 +1,4 @@
+#include <bit>
 #include <filesystem>
 
 #include <Databases/DatabaseFactory.h>
@@ -93,6 +94,7 @@ void validate(const ASTCreateQuery & create_query)
 DatabasePtr DatabaseFactory::get(const ASTCreateQuery & create, const String & metadata_path, ContextPtr context)
 {
     const auto engine_name = create.storage->engine->name;
+    std::cout << engine_name << std::endl;
     /// check if the database engine is a valid one before proceeding
     if (!database_engines.contains(engine_name))
     {
@@ -122,6 +124,7 @@ DatabasePtr DatabaseFactory::get(const ASTCreateQuery & create, const String & m
 
 void DatabaseFactory::registerDatabase(const std::string & name, CreatorFn creator_fn)
 {
+    std::cout << "In database factory " << name <<std::endl;
     if (!database_engines.emplace(name, std::move(creator_fn)).second)
         throw Exception(ErrorCodes::LOGICAL_ERROR, "DatabaseFactory: the database engine name '{}' is not unique", name);
 }

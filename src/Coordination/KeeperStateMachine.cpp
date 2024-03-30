@@ -44,7 +44,6 @@ KeeperStateMachine::KeeperStateMachine(
     ResponsesQueue & responses_queue_,
     SnapshotsQueue & snapshots_queue_,
     const KeeperContextPtr & keeper_context_,
-    KeeperSnapshotManagerS3 * snapshot_manager_s3_,
     CommitCallback commit_callback_,
     const std::string & superdigest_)
     : commit_callback(commit_callback_)
@@ -60,7 +59,6 @@ KeeperStateMachine::KeeperStateMachine(
     , log(getLogger("KeeperStateMachine"))
     , superdigest(superdigest_)
     , keeper_context(keeper_context_)
-    , snapshot_manager_s3(snapshot_manager_s3_)
 {
 }
 
@@ -627,21 +625,6 @@ void KeeperStateMachine::create_snapshot(nuraft::snapshot & s, nuraft::async_res
 
         return ret ? latest_snapshot_info : SnapshotFileInfo{};
     };
-
-
-    if (keeper_context->getServerState() == KeeperContext::Phase::SHUTDOWN)
-    {
-        LOG_INFO(log, "Creating a snapshot during shutdown because 'create_snapshot_on_exit' is enabled.");
-        auto snapshot_file_info = snapshot_task.create_snapshot(std::move(snapshot_task.snapshot));
-
-        if (!snapshot_file_info.path.empty() && snapshot_manager_s3)
-        {
-            LOG_INFO(log, "Uploading snapshot {} during shutdown because 'upload_snapshot_on_exit' is enabled.", snapshot_file_info.path);
-            snapshot_manager_s3->uploadSnapshot(snapshot_file_info, /* asnyc_upload */ false);
-        }
-
-        return;
-    }
 
     LOG_DEBUG(log, "In memory snapshot {} created, queueing task to flush to disk", s.get_last_log_idx());
     /// Flush snapshot to disk in a separate thread.

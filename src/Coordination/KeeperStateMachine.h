@@ -2,10 +2,8 @@
 
 #include <Coordination/CoordinationSettings.h>
 #include <Coordination/KeeperSnapshotManager.h>
-#include <Coordination/KeeperSnapshotManagerS3.h>
 #include <Coordination/KeeperContext.h>
 #include <Coordination/KeeperStorage.h>
-
 #include <libnuraft/nuraft.hxx>
 #include <Common/ConcurrentBoundedQueue.h>
 
@@ -26,7 +24,6 @@ public:
         ResponsesQueue & responses_queue_,
         SnapshotsQueue & snapshots_queue_,
         const KeeperContextPtr & keeper_context_,
-        KeeperSnapshotManagerS3 * snapshot_manager_s3_,
         CommitCallback commit_callback_ = {},
         const std::string & superdigest_ = "");
 
@@ -179,8 +176,6 @@ private:
     const std::string superdigest;
 
     KeeperContextPtr keeper_context;
-
-    KeeperSnapshotManagerS3 * snapshot_manager_s3;
 
     KeeperStorage::ResponseForSession processReconfiguration(
         const KeeperStorage::RequestForSession& request_for_session)

@@ -28,10 +28,6 @@ void registerDatabaseMaterializedPostgreSQL(DatabaseFactory & factory);
 void registerDatabaseSQLite(DatabaseFactory & factory);
 #endif
 
-#if USE_AWS_S3
-void registerDatabaseS3(DatabaseFactory & factory);
-#endif
-
 #if USE_HDFS
 void registerDatabaseHDFS(DatabaseFactory & factory);
 #endif
@@ -59,10 +55,6 @@ void registerDatabases()
 
 #if USE_SQLITE
     registerDatabaseSQLite(factory);
-#endif
-
-#if USE_AWS_S3
-    registerDatabaseS3(factory);
 #endif
 
 #if USE_HDFS

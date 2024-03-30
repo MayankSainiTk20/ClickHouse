@@ -12,15 +12,10 @@
 #include <Interpreters/Cache/FileCacheFactory.h>
 #include <Compression/CompressedReadBuffer.h>
 #include <IO/HashingReadBuffer.h>
-#include <IO/S3Common.h>
 #include <Common/CurrentMetrics.h>
 #include <Common/SipHash.h>
 #include <Common/ZooKeeper/IKeeper.h>
 #include <Poco/Net/NetException.h>
-
-#if USE_AZURE_BLOB_STORAGE
-#include <azure/core/http/http.hpp>
-#endif
 
 namespace CurrentMetrics
 {
@@ -62,19 +57,6 @@ bool isRetryableException(const std::exception_ptr exception_ptr)
     {
         rethrow_exception(exception_ptr);
     }
-#if USE_AWS_S3
-    catch (const S3Exception & s3_exception)
-    {
-        if (s3_exception.isRetryableError())
-            return true;
-    }
-#endif
-#if USE_AZURE_BLOB_STORAGE
-    catch (const Azure::Core::RequestFailedException &)
-    {
-        return true;
-    }
-#endif
     catch (const ErrnoException & e)
     {
         if (e.getErrno() == EMFILE)

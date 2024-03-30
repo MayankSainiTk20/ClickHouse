@@ -65,9 +65,7 @@
     #include <Functions/getFuzzerData.h>
 #endif
 
-#if USE_AZURE_BLOB_STORAGE
-#   include <azure/storage/common/internal/xml_wrapper.hpp>
-#endif
+
 
 namespace fs = std::filesystem;
 
@@ -142,13 +140,6 @@ void LocalServer::initialize(Poco::Util::Application & self)
         config().getUInt("thread_pool_queue_size", 10000)
     );
 
-#if USE_AZURE_BLOB_STORAGE
-    /// See the explanation near the same line in Server.cpp
-    GlobalThreadPool::instance().addOnDestroyCallback([]
-    {
-        Azure::Storage::_internal::XmlGlobalDeinitialize();
-    });
-#endif
 
     getIOThreadPool().initialize(
         config().getUInt("max_io_thread_pool_size", 100),
@@ -449,6 +440,7 @@ void LocalServer::connect()
 int LocalServer::main(const std::vector<std::string> & /*args*/)
 try
 {
+    printf("Starting the server ");
     UseSSL use_ssl;
     thread_status.emplace();
 

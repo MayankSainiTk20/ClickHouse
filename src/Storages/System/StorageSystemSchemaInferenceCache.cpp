@@ -1,9 +1,7 @@
 #include <Storages/System/StorageSystemSchemaInferenceCache.h>
 #include <Storages/StorageFile.h>
-#include <Storages/StorageS3.h>
 #include <Storages/StorageURL.h>
 #include <Storages/HDFS/StorageHDFS.h>
-#include <Storages/StorageAzureBlob.h>
 #include <DataTypes/DataTypeString.h>
 #include <DataTypes/DataTypeDateTime.h>
 #include <DataTypes/DataTypesNumber.h>
@@ -75,16 +73,10 @@ static void fillDataImpl(MutableColumns & res_columns, SchemaCache & schema_cach
 void StorageSystemSchemaInferenceCache::fillData(MutableColumns & res_columns, ContextPtr context, const ActionsDAG::Node *, std::vector<UInt8>) const
 {
     fillDataImpl(res_columns, StorageFile::getSchemaCache(context), "File");
-#if USE_AWS_S3
-    fillDataImpl(res_columns, StorageS3::getSchemaCache(context), "S3");
-#endif
 #if USE_HDFS
     fillDataImpl(res_columns, StorageHDFS::getSchemaCache(context), "HDFS");
 #endif
     fillDataImpl(res_columns, StorageURL::getSchemaCache(context), "URL");
-#if USE_AZURE_BLOB_STORAGE
-    fillDataImpl(res_columns, StorageAzureBlob::getSchemaCache(context), "Azure");
-#endif
 }
 
 }

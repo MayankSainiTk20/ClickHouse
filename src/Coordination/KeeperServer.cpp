@@ -9,7 +9,6 @@
 #include <Coordination/KeeperLogStore.h>
 #include <Coordination/KeeperStateMachine.h>
 #include <Coordination/KeeperStateManager.h>
-#include <Coordination/KeeperSnapshotManagerS3.h>
 #include <Coordination/LoggerWrapper.h>
 #include <Coordination/WriteBufferFromNuraftBuffer.h>
 #include <IO/ReadHelpers.h>
@@ -119,7 +118,6 @@ KeeperServer::KeeperServer(
     ResponsesQueue & responses_queue_,
     SnapshotsQueue & snapshots_queue_,
     KeeperContextPtr keeper_context_,
-    KeeperSnapshotManagerS3 & snapshot_manager_s3,
     KeeperStateMachine::CommitCallback commit_callback)
     : server_id(configuration_and_settings_->server_id)
     , log(getLogger("KeeperServer"))
@@ -135,7 +133,6 @@ KeeperServer::KeeperServer(
         responses_queue_,
         snapshots_queue_,
         keeper_context,
-        config.getBool("keeper_server.upload_snapshot_on_exit", false) ? &snapshot_manager_s3 : nullptr,
         commit_callback,
         checkAndGetSuperdigest(configuration_and_settings_->super_digest));
 

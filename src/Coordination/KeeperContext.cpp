@@ -9,7 +9,6 @@
 #include <Coordination/KeeperFeatureFlags.h>
 #include <Disks/DiskLocal.h>
 #include <Disks/DiskSelector.h>
-#include <IO/S3/Credentials.h>
 #include <Interpreters/Context.h>
 #include <Poco/Util/AbstractConfiguration.h>
 #include <Common/logger_useful.h>

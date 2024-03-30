@@ -7,7 +7,6 @@
 #include <Disks/createVolume.h>
 #include <IO/ReadWriteBufferFromHTTP.h>
 #include <IO/HTTPCommon.h>
-#include <IO/S3Common.h>
 #include <Server/HTTP/HTMLForm.h>
 #include <Server/HTTP/HTTPServerResponse.h>
 #include <Storages/MergeTree/MergedBlockOutputStream.h>
@@ -619,18 +618,6 @@ std::pair<MergeTreeData::MutableDataPartPtr, scope_guard> Fetcher::fetchSelected
             if (e.code() != ErrorCodes::S3_ERROR && e.code() != ErrorCodes::ZERO_COPY_REPLICATION_ERROR)
                 throw;
 
-#if USE_AWS_S3
-            if (const auto * s3_exception = dynamic_cast<const S3Exception *>(&e))
-            {
-                /// It doesn't make sense to retry Access Denied or No Such Key
-                if (!s3_exception->isRetryableError())
-                {
-                    tryLogCurrentException(log, fmt::format("while fetching part: {}", part_name));
-                    throw;
-                }
-            }
-#endif
-
             LOG_WARNING(log, "Will retry fetching part without zero-copy: {}", e.message());
 
             /// It's important to release session from HTTP pool. Otherwise it's possible to get deadlock
@@ -874,16 +861,7 @@ MergeTreeData::MutableDataPartPtr Fetcher::downloadPartToDisk(
         new_data_part->modification_time = time(nullptr);
         new_data_part->loadColumnsChecksumsIndexes(true, false);
     }
-#if USE_AWS_S3
-    catch (const S3Exception & ex)
-    {
-        if (ex.getS3ErrorCode() == Aws::S3::S3Errors::NO_SUCH_KEY)
-        {
-            throw Exception(ErrorCodes::S3_ERROR, "Cannot fetch part {} because we lost lock and it was concurrently removed", part_name);
-        }
-        throw;
-    }
-#endif
+
     catch (...) /// Redundant catch, just to be able to add first one with #if
     {
         throw;

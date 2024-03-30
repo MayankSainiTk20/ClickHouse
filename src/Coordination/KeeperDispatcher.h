@@ -14,7 +14,6 @@
 #include <Coordination/CoordinationSettings.h>
 #include <Coordination/Keeper4LWInfo.h>
 #include <Coordination/KeeperConnectionStats.h>
-#include <Coordination/KeeperSnapshotManagerS3.h>
 #include <Common/MultiVersion.h>
 #include <Common/Macros.h>
 
@@ -75,7 +74,6 @@ private:
     /// Counter for new session_id requests.
     std::atomic<int64_t> internal_session_id_counter{0};
 
-    KeeperSnapshotManagerS3 snapshot_s3;
 
     KeeperContextPtr keeper_context;
 

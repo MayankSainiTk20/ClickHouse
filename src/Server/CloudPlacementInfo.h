@@ -30,8 +30,6 @@ private:
     LoggerPtr log = getLogger("CloudPlacementInfo");
 
     bool initialized;
-
-    bool use_imds;
     std::string availability_zone;
 };
 

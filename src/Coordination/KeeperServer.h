@@ -76,7 +76,6 @@ public:
         ResponsesQueue & responses_queue_,
         SnapshotsQueue & snapshots_queue_,
         KeeperContextPtr keeper_context_,
-        KeeperSnapshotManagerS3 & snapshot_manager_s3,
         KeeperStateMachine::CommitCallback commit_callback);
 
     /// Load state machine from the latest snapshot and load log storage. Start NuRaft with required settings.

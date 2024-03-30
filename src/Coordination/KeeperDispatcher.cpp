@@ -334,9 +334,7 @@ void KeeperDispatcher::snapshotThread()
 
             if (snapshot_file_info.path.empty())
                 continue;
-
-            if (isLeader())
-                snapshot_s3.uploadSnapshot(snapshot_file_info);
+            
         }
         catch (...)
         {
@@ -413,7 +411,7 @@ bool KeeperDispatcher::putRequest(const Coordination::ZooKeeperRequestPtr & requ
     return true;
 }
 
-void KeeperDispatcher::initialize(const Poco::Util::AbstractConfiguration & config, bool standalone_keeper, bool start_async, const MultiVersion<Macros>::Version & macros)
+void KeeperDispatcher::initialize(const Poco::Util::AbstractConfiguration & config, bool standalone_keeper, bool start_async, const MultiVersion<Macros>::Version &)
 {
     LOG_DEBUG(log, "Initializing storage dispatcher");
 
@@ -427,7 +425,6 @@ void KeeperDispatcher::initialize(const Poco::Util::AbstractConfiguration & conf
     responses_thread = ThreadFromGlobalPool([this] { responseThread(); });
     snapshot_thread = ThreadFromGlobalPool([this] { snapshotThread(); });
 
-    snapshot_s3.startup(config, macros);
 
     server = std::make_unique<KeeperServer>(
         configuration_and_settings,
@@ -435,7 +432,6 @@ void KeeperDispatcher::initialize(const Poco::Util::AbstractConfiguration & conf
         responses_queue,
         snapshots_queue,
         keeper_context,
-        snapshot_s3,
         [this](uint64_t /*log_idx*/, const KeeperStorage::RequestForSession & request_for_session)
         {
             {
@@ -596,8 +592,6 @@ void KeeperDispatcher::shutdown()
 
         if (server)
             server->shutdown();
-
-        snapshot_s3.shutdown();
 
         CurrentMetrics::set(CurrentMetrics::KeeperAliveConnections, 0);
 
@@ -895,7 +889,7 @@ bool KeeperDispatcher::isServerActive() const
     return checkInit() && hasLeader() && !server->isRecovering();
 }
 
-void KeeperDispatcher::updateConfiguration(const Poco::Util::AbstractConfiguration & config, const MultiVersion<Macros>::Version & macros)
+void KeeperDispatcher::updateConfiguration(const Poco::Util::AbstractConfiguration & config, const MultiVersion<Macros>::Version &)
 {
     auto diff = server->getRaftConfigurationDiff(config);
 
@@ -916,8 +910,6 @@ void KeeperDispatcher::updateConfiguration(const Poco::Util::AbstractConfigurati
         for (auto & change : diff)
             if (!cluster_update_queue.push(change))
                 throw Exception(ErrorCodes::SYSTEM_ERROR, "Cannot push configuration update to queue");
-
-    snapshot_s3.updateS3Configuration(config, macros);
 
     keeper_context->updateKeeperMemorySoftLimit(config);
 }

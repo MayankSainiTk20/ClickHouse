@@ -135,10 +135,6 @@
 #    include <jemalloc/jemalloc.h>
 #endif
 
-#if USE_AZURE_BLOB_STORAGE
-#   include <azure/storage/common/internal/xml_wrapper.hpp>
-#endif
-
 #include <incbin.h>
 /// A minimal file used when the server is run without installation
 INCBIN(resource_embedded_xml, SOURCE_DIR "/programs/server/embedded.xml");
@@ -714,7 +710,7 @@ try
 
     LOG_INFO(log, "Available RAM: {}; physical cores: {}; logical cores: {}.",
         formatReadableSizeWithBinarySuffix(physical_server_memory),
-        getNumberOfPhysicalCPUCores(),  // on ARM processors it can show only enabled at current moment cores
+        getNumberOfPhysicalCPUCores(),  // on ARM processors it can showsrc/CMakeFiles/dbms.dir/Access/AccessControl.cpp only enabled at current moment cores
         std::thread::hardware_concurrency());
 
 #if defined(__x86_64__)
@@ -804,19 +800,6 @@ try
         LOG_DEBUG(log, "Destroyed global context.");
     });
 
-
-#if USE_AZURE_BLOB_STORAGE
-    /// It makes sense to deinitialize libxml after joining of all threads
-    /// in global pool because libxml uses thread-local memory allocations via
-    /// 'pthread_key_create' and 'pthread_setspecific' which should be deallocated
-    /// at 'pthread_exit'. Deinitialization of libxml leads to call of 'pthread_key_delete'
-    /// and if it is done before joining of threads, allocated memory will not be freed
-    /// and there may be memory leaks in threads that used libxml.
-    GlobalThreadPool::instance().addOnDestroyCallback([]
-    {
-        Azure::Storage::_internal::XmlGlobalDeinitialize();
-    });
-#endif
 
     getIOThreadPool().initialize(
         server_settings.max_io_thread_pool_size,
