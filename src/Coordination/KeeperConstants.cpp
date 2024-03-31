@@ -281,8 +281,6 @@
     M(InterfacePrometheusReceiveBytes) \
     M(InterfaceInterserverSendBytes) \
     M(InterfaceInterserverReceiveBytes) \
-    M(InterfaceMySQLSendBytes) \
-    M(InterfaceMySQLReceiveBytes) \
     M(InterfacePostgreSQLSendBytes) \
     M(InterfacePostgreSQLReceiveBytes) \
 \

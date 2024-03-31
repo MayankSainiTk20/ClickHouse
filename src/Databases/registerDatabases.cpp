@@ -13,11 +13,6 @@ void registerDatabaseLazy(DatabaseFactory & factory);
 void registerDatabaseFilesystem(DatabaseFactory & factory);
 void registerDatabaseReplicated(DatabaseFactory & factory);
 
-#if USE_MYSQL
-void registerDatabaseMySQL(DatabaseFactory & factory);
-void registerDatabaseMaterializedMySQL(DatabaseFactory & factory);
-#endif
-
 #if USE_LIBPQXX
 void registerDatabasePostgreSQL(DatabaseFactory & factory);
 
@@ -42,11 +37,6 @@ void registerDatabases()
     registerDatabaseLazy(factory);
     registerDatabaseFilesystem(factory);
     registerDatabaseReplicated(factory);
-
-#if USE_MYSQL
-    registerDatabaseMySQL(factory);
-    registerDatabaseMaterializedMySQL(factory);
-#endif
 
 #if USE_LIBPQXX
     registerDatabasePostgreSQL(factory);

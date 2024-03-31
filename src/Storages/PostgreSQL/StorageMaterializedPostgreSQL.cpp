@@ -32,7 +32,6 @@
 #include <Interpreters/InterpreterDropQuery.h>
 
 #include <Storages/StorageFactory.h>
-#include <Storages/ReadFinalForExternalReplicaStorage.h>
 #include <Storages/StoragePostgreSQL.h>
 
 #include <QueryPipeline/Pipe.h>
@@ -263,26 +262,23 @@ void StorageMaterializedPostgreSQL::dropInnerTableIfAny(bool sync, ContextPtr lo
 }
 
 
-bool StorageMaterializedPostgreSQL::needRewriteQueryWithFinal(const Names & column_names) const
+bool StorageMaterializedPostgreSQL::needRewriteQueryWithFinal([[maybe_unused]] const Names & column_names) const
 {
-    return needRewriteQueryWithFinalForStorage(column_names, getNested());
+    return false;
 }
 
 
 void StorageMaterializedPostgreSQL::read(
         QueryPlan & query_plan,
-        const Names & column_names,
-        const StorageSnapshotPtr & /*storage_snapshot*/,
-        SelectQueryInfo & query_info,
+        [[maybe_unused]] const Names & column_names,
+         [[maybe_unused]] const StorageSnapshotPtr & /*storage_snapshot*/,
+        [[maybe_unused]] SelectQueryInfo & query_info,
         ContextPtr context_,
-        QueryProcessingStage::Enum processed_stage,
-        size_t max_block_size,
-        size_t num_streams)
+        [[maybe_unused]] QueryProcessingStage::Enum processed_stage,
+      [[maybe_unused]]  size_t max_block_size,
+       [[maybe_unused]] size_t num_streams)
 {
     auto nested_table = getNested();
-
-    readFinalFromNestedStorage(query_plan, nested_table, column_names,
-            query_info, context_, processed_stage, max_block_size, num_streams);
 
     auto lock = lockForShare(context_->getCurrentQueryId(), context_->getSettingsRef().lock_acquire_timeout);
     query_plan.addTableLock(lock);

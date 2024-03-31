@@ -8,7 +8,6 @@
 #include <IO/WriteHelpers.h>
 #include <Processors/Formats/IRowInputFormat.h>
 #include <Processors/Formats/IRowOutputFormat.h>
-#include <Processors/Formats/Impl/MySQLOutputFormat.h>
 #include <Processors/Formats/Impl/ParallelFormattingOutputFormat.h>
 #include <Processors/Formats/Impl/ParallelParsingInputFormat.h>
 #include <Processors/Formats/Impl/ValuesBlockInputFormat.h>
@@ -527,10 +526,6 @@ OutputFormatPtr FormatFactory::getOutputFormat(
     /// Enable auto-flush for streaming mode. Currently it is needed by INSERT WATCH query.
     if (format_settings.enable_streaming)
         format->setAutoFlush();
-
-    /// It's a kludge. Because I cannot remove context from MySQL format.
-    if (auto * mysql = typeid_cast<MySQLOutputFormat *>(format.get()))
-        mysql->setContext(context);
 
     addExistingProgressToOutputFormat(format, context);
 

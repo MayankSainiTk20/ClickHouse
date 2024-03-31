@@ -9,11 +9,8 @@
 #include <Common/parseAddress.h>
 #include <Processors/QueryPlan/QueryPlan.h>
 #include <Common/parseRemoteDescription.h>
-#include <Storages/StorageMySQL.h>
-#include <Storages/MySQL/MySQLSettings.h>
 #include <Storages/StoragePostgreSQL.h>
 #include <Storages/StorageURL.h>
-#include <Storages/MySQL/MySQLHelpers.h>
 #include <Storages/NamedCollectionsHelpers.h>
 #include <Storages/checkAndGetLiteralArgument.h>
 #include <Common/logger_useful.h>
@@ -136,24 +133,6 @@ void registerStorageExternalDistributed(StorageFactory & factory)
                 }
             }
         }
-#if USE_MYSQL
-        else if (engine_name == "MySQL")
-        {
-            MySQLSettings mysql_settings;
-            auto configuration = StorageMySQL::getConfiguration(inner_engine_args, context, mysql_settings);
-            auto shards_addresses = get_addresses(configuration.addresses_expr);
-            for (const auto & shard_address : shards_addresses)
-            {
-                auto current_configuration{configuration};
-                current_configuration.addresses = parseRemoteDescriptionForExternalDatabase(shard_address, max_addresses, 3306);
-                auto pool = createMySQLPoolWithFailover(current_configuration, mysql_settings);
-                shards.insert(std::make_shared<StorageMySQL>(
-                    args.table_id, std::move(pool), configuration.database, configuration.table,
-                    /* replace_query = */ false, /* on_duplicate_clause = */ "",
-                    args.columns, args.constraints, String{}, context, mysql_settings));
-            }
-        }
-#endif
 #if USE_LIBPQXX
         else if (engine_name == "PostgreSQL")
         {

@@ -683,8 +683,6 @@ The server successfully detected this situation and will download merged part fr
     M(InterfacePrometheusReceiveBytes, "Number of bytes received through Prometheus interfaces") \
     M(InterfaceInterserverSendBytes, "Number of bytes sent through interserver interfaces") \
     M(InterfaceInterserverReceiveBytes, "Number of bytes received through interserver interfaces") \
-    M(InterfaceMySQLSendBytes, "Number of bytes sent through MySQL interfaces") \
-    M(InterfaceMySQLReceiveBytes, "Number of bytes received through MySQL interfaces") \
     M(InterfacePostgreSQLSendBytes, "Number of bytes sent through PostgreSQL interfaces") \
     M(InterfacePostgreSQLReceiveBytes, "Number of bytes received through PostgreSQL interfaces") \
     \

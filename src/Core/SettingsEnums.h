@@ -150,16 +150,6 @@ enum class CleanDeletedRows
 
 DECLARE_SETTING_ENUM(CleanDeletedRows)
 
-enum class MySQLDataTypesSupport
-{
-    DECIMAL, // convert MySQL's decimal and number to ClickHouse Decimal when applicable
-    DATETIME64, // convert MySQL's DATETIME and TIMESTAMP and ClickHouse DateTime64 if precision is > 0 or range is greater that for DateTime.
-    DATE2DATE32, // convert MySQL's date type to ClickHouse Date32
-    DATE2STRING  // convert MySQL's date type to ClickHouse String(This is usually used when your mysql date is less than 1925)
-};
-
-DECLARE_SETTING_MULTI_ENUM(MySQLDataTypesSupport)
-
 enum class SetOperationMode
 {
     Unspecified = 0, // Query UNION / EXCEPT / INTERSECT without SetOperationMode will throw exception

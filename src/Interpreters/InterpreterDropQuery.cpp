@@ -16,10 +16,6 @@
 
 #include "config.h"
 
-#if USE_MYSQL
-#   include <Databases/MySQL/DatabaseMaterializedMySQL.h>
-#endif
-
 #if USE_LIBPQXX
 #   include <Databases/PostgreSQL/DatabaseMaterializedPostgreSQL.h>
 #endif

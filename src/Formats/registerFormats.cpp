@@ -87,7 +87,6 @@ void registerOutputFormatJSONEachRowWithProgress(FormatFactory & factory);
 void registerOutputFormatXML(FormatFactory & factory);
 void registerOutputFormatODBCDriver2(FormatFactory & factory);
 void registerOutputFormatNull(FormatFactory & factory);
-void registerOutputFormatMySQLWire(FormatFactory & factory);
 void registerOutputFormatMarkdown(FormatFactory & factory);
 void registerOutputFormatPostgreSQLWire(FormatFactory & factory);
 void registerOutputFormatPrometheus(FormatFactory & factory);
@@ -99,7 +98,6 @@ void registerInputFormatRegexp(FormatFactory & factory);
 void registerInputFormatJSONAsString(FormatFactory & factory);
 void registerInputFormatJSONAsObject(FormatFactory & factory);
 void registerInputFormatLineAsString(FormatFactory & factory);
-void registerInputFormatMySQLDump(FormatFactory & factory);
 void registerInputFormatParquetMetadata(FormatFactory & factory);
 void registerInputFormatDWARF(FormatFactory & factory);
 void registerInputFormatOne(FormatFactory & factory);
@@ -142,7 +140,6 @@ void registerRegexpSchemaReader(FormatFactory & factory);
 void registerTSKVSchemaReader(FormatFactory & factory);
 void registerValuesSchemaReader(FormatFactory & factory);
 void registerTemplateSchemaReader(FormatFactory & factory);
-void registerMySQLSchemaReader(FormatFactory & factory);
 void registerBSONEachRowSchemaReader(FormatFactory & factory);
 void registerParquetMetadataSchemaReader(FormatFactory & factory);
 void registerDWARFSchemaReader(FormatFactory & factory);
@@ -230,7 +227,6 @@ void registerFormats()
     registerOutputFormatXML(factory);
     registerOutputFormatODBCDriver2(factory);
     registerOutputFormatNull(factory);
-    registerOutputFormatMySQLWire(factory);
     registerOutputFormatMarkdown(factory);
     registerOutputFormatPostgreSQLWire(factory);
     registerOutputFormatCapnProto(factory);
@@ -246,7 +242,6 @@ void registerFormats()
 #endif
 
     registerInputFormatCapnProto(factory);
-    registerInputFormatMySQLDump(factory);
 
     registerInputFormatParquetMetadata(factory);
     registerInputFormatDWARF(factory);
@@ -285,7 +280,6 @@ void registerFormats()
     registerTSKVSchemaReader(factory);
     registerValuesSchemaReader(factory);
     registerTemplateSchemaReader(factory);
-    registerMySQLSchemaReader(factory);
     registerBSONEachRowSchemaReader(factory);
     registerParquetMetadataSchemaReader(factory);
     registerDWARFSchemaReader(factory);

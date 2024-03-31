@@ -93,7 +93,6 @@
 #include <Common/filesystemHelpers.h>
 #include <Compression/CompressionCodecEncrypted.h>
 #include <Server/HTTP/HTTPServerConnectionFactory.h>
-#include <Server/MySQLHandlerFactory.h>
 #include <Server/PostgreSQLHandlerFactory.h>
 #include <Server/ProxyV1HandlerFactory.h>
 #include <Server/TLSHandlerFactory.h>
@@ -161,8 +160,6 @@ namespace ProfileEvents
     extern const Event InterfacePrometheusReceiveBytes;
     extern const Event InterfaceInterserverSendBytes;
     extern const Event InterfaceInterserverReceiveBytes;
-    extern const Event InterfaceMySQLSendBytes;
-    extern const Event InterfaceMySQLReceiveBytes;
     extern const Event InterfacePostgreSQLSendBytes;
     extern const Event InterfacePostgreSQLReceiveBytes;
 }
@@ -497,7 +494,7 @@ static void sanityChecks(Server & server)
 #if defined(OS_LINUX)
     try
     {
-        const std::unordered_set<std::string> fastClockSources = {
+        const std::unordered_set<std::string> fast_clock_sources = {
             // ARM clock
             "arch_sys_counter",
             // KVM guest clock
@@ -506,7 +503,7 @@ static void sanityChecks(Server & server)
             "tsc",
         };
         const char * filename = "/sys/devices/system/clocksource/clocksource0/current_clocksource";
-        if (!fastClockSources.contains(readLine(filename)))
+        if (!fast_clock_sources.contains(readLine(filename)))
             server.context()->addWarningMessage("Linux is not using a fast clock source. Performance can be degraded. Check " + String(filename));
     }
     catch (...) // NOLINT(bugprone-empty-catch)
@@ -2151,8 +2148,6 @@ std::unique_ptr<TCPProtocolStackFactory> Server::buildProtocolStackFromConfig(
 
         if (type == "proxy1")
             return TCPServerConnectionFactory::Ptr(new ProxyV1HandlerFactory(*this, conf_name));
-        if (type == "mysql")
-            return TCPServerConnectionFactory::Ptr(new MySQLHandlerFactory(*this, ProfileEvents::InterfaceMySQLReceiveBytes, ProfileEvents::InterfaceMySQLSendBytes));
         if (type == "postgres")
             return TCPServerConnectionFactory::Ptr(new PostgreSQLHandlerFactory(*this, ProfileEvents::InterfacePostgreSQLReceiveBytes, ProfileEvents::InterfacePostgreSQLSendBytes));
         if (type == "http")
@@ -2394,23 +2389,6 @@ void Server::createServers(
                 UNUSED(port);
                 throw Exception(ErrorCodes::SUPPORT_IS_DISABLED, "SSL support for TCP protocol is disabled because Poco library was built without NetSSL support.");
     #endif
-            });
-        }
-
-        if (server_type.shouldStart(ServerType::Type::MYSQL))
-        {
-            port_name = "mysql_port";
-            createServer(config, listen_host, port_name, listen_try, start_servers, servers, [&](UInt16 port) -> ProtocolServerAdapter
-            {
-                Poco::Net::ServerSocket socket;
-                auto address = socketBindListen(config, socket, listen_host, port, /* secure = */ true);
-                socket.setReceiveTimeout(Poco::Timespan());
-                socket.setSendTimeout(settings.send_timeout);
-                return ProtocolServerAdapter(
-                    listen_host,
-                    port_name,
-                    "MySQL compatibility protocol: " + address.toString(),
-                    std::make_unique<TCPServer>(new MySQLHandlerFactory(*this, ProfileEvents::InterfaceMySQLReceiveBytes, ProfileEvents::InterfaceMySQLSendBytes), server_pool, socket, new Poco::Net::TCPServerParams));
             });
         }
 

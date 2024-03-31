@@ -43,36 +43,6 @@ namespace
         return Util::encodeSHA256(String(password).append(salt)) == password_sha256;
     }
 
-    bool checkPasswordDoubleSHA1MySQL(std::string_view scramble, std::string_view scrambled_password, const Digest & password_double_sha1)
-    {
-        /// scrambled_password = SHA1(password) XOR SHA1(scramble <concat> SHA1(SHA1(password)))
-
-        constexpr size_t scramble_length = 20;
-        constexpr size_t sha1_size = Poco::SHA1Engine::DIGEST_SIZE;
-
-        if ((scramble.size() < scramble_length) || (scramble.size() > scramble_length + 1)
-            || ((scramble.size() == scramble_length + 1) && (scramble[scramble_length] != 0))
-            || (scrambled_password.size() != sha1_size) || (password_double_sha1.size() != sha1_size))
-            return false;
-
-        Poco::SHA1Engine engine;
-        engine.update(scramble.data(), scramble_length);
-        engine.update(password_double_sha1.data(), sha1_size);
-        const Poco::SHA1Engine::Digest & digest = engine.digest();
-
-        Poco::SHA1Engine::Digest calculated_password_sha1(sha1_size);
-        for (size_t i = 0; i < sha1_size; ++i)
-            calculated_password_sha1[i] = scrambled_password[i] ^ digest[i];
-
-        auto calculated_password_double_sha1 = Util::encodeSHA1(calculated_password_sha1);
-        return calculated_password_double_sha1 == password_double_sha1;
-    }
-
-    bool checkPasswordPlainTextMySQL(std::string_view scramble, std::string_view scrambled_password, const Digest & password_plaintext)
-    {
-        return checkPasswordDoubleSHA1MySQL(scramble, scrambled_password, Util::encodeDoubleSHA1(password_plaintext));
-    }
-
 #if USE_SSH
     bool checkSshSignature(const std::vector<ssh::SSHKey> & keys, std::string_view signature, std::string_view original)
     {
@@ -109,37 +79,6 @@ bool Authentication::areCredentialsValid(
 
             case AuthenticationType::KERBEROS:
                 return external_authenticators.checkKerberosCredentials(auth_data.getKerberosRealm(), *gss_acceptor_context);
-
-            case AuthenticationType::SSL_CERTIFICATE:
-                throw Authentication::Require<BasicCredentials>("ClickHouse X.509 Authentication");
-
-            case AuthenticationType::SSH_KEY:
-                throw Authentication::Require<SshCredentials>("Ssh Keys Authentication");
-
-            case AuthenticationType::MAX:
-                break;
-        }
-    }
-
-    if (const auto * mysql_credentials = typeid_cast<const MySQLNative41Credentials *>(&credentials))
-    {
-        switch (auth_data.getType())
-        {
-            case AuthenticationType::NO_PASSWORD:
-                return true; // N.B. even if the password is not empty!
-
-            case AuthenticationType::PLAINTEXT_PASSWORD:
-                return checkPasswordPlainTextMySQL(mysql_credentials->getScramble(), mysql_credentials->getScrambledPassword(), auth_data.getPasswordHashBinary());
-
-            case AuthenticationType::DOUBLE_SHA1_PASSWORD:
-                return checkPasswordDoubleSHA1MySQL(mysql_credentials->getScramble(), mysql_credentials->getScrambledPassword(), auth_data.getPasswordHashBinary());
-
-            case AuthenticationType::SHA256_PASSWORD:
-            case AuthenticationType::BCRYPT_PASSWORD:
-            case AuthenticationType::LDAP:
-            case AuthenticationType::KERBEROS:
-            case AuthenticationType::HTTP:
-                throw Authentication::Require<BasicCredentials>("ClickHouse Basic Authentication");
 
             case AuthenticationType::SSL_CERTIFICATE:
                 throw Authentication::Require<BasicCredentials>("ClickHouse X.509 Authentication");

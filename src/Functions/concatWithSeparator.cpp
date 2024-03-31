@@ -163,11 +163,11 @@ private:
 
 struct NameConcatWithSeparator
 {
-    static constexpr auto name = "concatWithSeparator";
+    static constexpr auto name [[maybe_unused]] = "concatWithSeparator";
 };
 struct NameConcatWithSeparatorAssumeInjective
 {
-    static constexpr auto name = "concatWithSeparatorAssumeInjective";
+    static  constexpr auto name [[maybe_unused]] = "concatWithSeparatorAssumeInjective";
 };
 
 using FunctionConcatWithSeparator = ConcatWithSeparatorImpl<NameConcatWithSeparator, false>;
@@ -191,9 +191,6 @@ The function is named “injective” if it always returns different result for 
         )",
         .examples{{"concatWithSeparatorAssumeInjective", "SELECT concatWithSeparatorAssumeInjective('a', '1', '2', '3')", ""}},
         .categories{"String"}});
-
-    /// Compatibility with Spark and MySQL:
-    factory.registerAlias("concat_ws", "concatWithSeparator", FunctionFactory::CaseInsensitive);
 }
 
 }

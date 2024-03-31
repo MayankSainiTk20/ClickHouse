@@ -27,12 +27,6 @@ String InterpreterShowColumnsQuery::getRewrittenQuery()
 {
     const auto & query = query_ptr->as<ASTShowColumnsQuery &>();
 
-    ClientInfo::Interface client_interface = getContext()->getClientInfo().interface;
-    const bool use_mysql_types = (client_interface == ClientInfo::Interface::MYSQL); // connection made through MySQL wire protocol
-
-    const auto & settings = getContext()->getSettingsRef();
-    const bool remap_string_as_text = settings.mysql_map_string_to_text_in_show_columns;
-    const bool remap_fixed_string_as_text = settings.mysql_map_fixed_string_to_text_in_show_columns;
 
     WriteBufferFromOwnString buf_database;
     String resolved_database = getContext()->resolveDatabase(query.database);
@@ -40,65 +34,15 @@ String InterpreterShowColumnsQuery::getRewrittenQuery()
     String table = escapeString(query.table);
 
     String rewritten_query;
-    if (use_mysql_types)
-    {
-        /// Cheapskate SQL-based mapping from native types to MySQL types, see https://dev.mysql.com/doc/refman/8.0/en/data-types.html
-        /// Known issues:
-        /// - Enums are translated to TEXT
-        rewritten_query += fmt::format(
-            R"(
-WITH map(
-        'Int8',        'TINYINT',
-        'Int16',       'SMALLINT',
-        'Int32',       'INTEGER',
-        'Int64',       'BIGINT',
-        'UInt8',       'TINYINT UNSIGNED',
-        'UInt16',      'SMALLINT UNSIGNED',
-        'UInt32',      'INTEGER UNSIGNED',
-        'UInt64',      'BIGINT UNSIGNED',
-        'Float32',     'FLOAT',
-        'Float64',     'DOUBLE',
-        'UUID',        'CHAR',
-        'Bool',        'TINYINT',
-        'Date',        'DATE',
-        'Date32',      'DATE',
-        'DateTime',    'DATETIME',
-        'DateTime64',  'DATETIME',
-        'Map',         'JSON',
-        'Tuple',       'JSON',
-        'Object',      'JSON',
-        'String',      '{}',
-        'FixedString', '{}') AS native_to_mysql_mapping,
-        )",
-        remap_string_as_text ? "TEXT" : "BLOB",
-        remap_fixed_string_as_text ? "TEXT" : "BLOB");
-
-        rewritten_query += R"(
-        splitByRegexp('\(|\)', type_) AS split,
-        multiIf(startsWith(type_, 'LowCardinality(Nullable'), split[3],
-                startsWith(type_, 'LowCardinality'), split[2],
-                startsWith(type_, 'Nullable'), split[2],
-                split[1]) AS inner_type,
-        if (length(split) > 1, splitByString(', ', split[2]), []) AS decimal_scale_and_precision,
-        multiIf(inner_type = 'Decimal' AND toInt8(decimal_scale_and_precision[1]) <= 65 AND toInt8(decimal_scale_and_precision[2]) <= 30, concat('DECIMAL(', decimal_scale_and_precision[1], ', ', decimal_scale_and_precision[2], ')'),
-                mapContains(native_to_mysql_mapping, inner_type) = true, native_to_mysql_mapping[inner_type],
-                'TEXT') AS mysql_type
-            )";
-    }
 
     rewritten_query += R"(
 SELECT
     name_ AS field,
     )";
-
-    if (use_mysql_types)
-        rewritten_query += R"(
-    mysql_type AS type,
-        )";
-    else
-        rewritten_query += R"(
+    rewritten_query += R"(
     type_ AS type,
         )";
+        
 
     rewritten_query += R"(
     multiIf(startsWith(type_, 'Nullable('), 'YES', startsWith(type_, 'LowCardinality(Nullable('), 'YES', 'NO') AS `null`,

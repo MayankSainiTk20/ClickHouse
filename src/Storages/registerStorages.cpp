@@ -25,72 +25,7 @@ void registerStorageLiveView(StorageFactory & factory);
 void registerStorageGenerateRandom(StorageFactory & factory);
 void registerStorageExecutable(StorageFactory & factory);
 void registerStorageWindowView(StorageFactory & factory);
-#if USE_RAPIDJSON || USE_SIMDJSON
-void registerStorageFuzzJSON(StorageFactory & factory);
-#endif
 
-
-#if USE_PARQUET
-void registerStorageDeltaLake(StorageFactory & factory);
-#endif
-#if USE_AVRO
-void registerStorageIceberg(StorageFactory & factory);
-#endif
-
-#if USE_HDFS
-void registerStorageHDFS(StorageFactory & factory);
-
-#if USE_HIVE
-void registerStorageHive(StorageFactory & factory);
-#endif
-
-#endif
-
-void registerStorageODBC(StorageFactory & factory);
-void registerStorageJDBC(StorageFactory & factory);
-
-#if USE_MYSQL
-void registerStorageMySQL(StorageFactory & factory);
-#endif
-
-void registerStorageMongoDB(StorageFactory & factory);
-void registerStorageRedis(StorageFactory & factory);
-
-
-#if USE_RDKAFKA
-void registerStorageKafka(StorageFactory & factory);
-#endif
-
-#if USE_AMQPCPP
-void registerStorageRabbitMQ(StorageFactory & factory);
-#endif
-
-#if USE_NATSIO
-void registerStorageNATS(StorageFactory & factory);
-#endif
-
-#if USE_ROCKSDB
-void registerStorageEmbeddedRocksDB(StorageFactory & factory);
-#endif
-
-#if USE_LIBPQXX
-void registerStoragePostgreSQL(StorageFactory & factory);
-void registerStorageMaterializedPostgreSQL(StorageFactory & factory);
-#endif
-
-#if USE_MYSQL || USE_LIBPQXX
-void registerStorageExternalDistributed(StorageFactory & factory);
-#endif
-
-#if USE_FILELOG
-void registerStorageFileLog(StorageFactory & factory);
-#endif
-
-#if USE_SQLITE
-void registerStorageSQLite(StorageFactory & factory);
-#endif
-
-void registerStorageKeeperMap(StorageFactory & factory);
 
 void registerStorages()
 {
@@ -115,9 +50,6 @@ void registerStorages()
     registerStorageGenerateRandom(factory);
     registerStorageExecutable(factory);
     registerStorageWindowView(factory);
-#if USE_RAPIDJSON || USE_SIMDJSON
-    registerStorageFuzzJSON(factory);
-#endif
 
 }
 

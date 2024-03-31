@@ -14,7 +14,6 @@ namespace ErrorCodes
     extern const int UNKNOWN_DISTRIBUTED_PRODUCT_MODE;
     extern const int UNKNOWN_JOIN;
     extern const int BAD_ARGUMENTS;
-    extern const int UNKNOWN_MYSQL_DATATYPES_SUPPORT_LEVEL;
     extern const int UNKNOWN_UNION;
 }
 
@@ -100,12 +99,6 @@ IMPLEMENT_SETTING_AUTO_ENUM(DefaultDatabaseEngine, ErrorCodes::BAD_ARGUMENTS)
 IMPLEMENT_SETTING_AUTO_ENUM(DefaultTableEngine, ErrorCodes::BAD_ARGUMENTS)
 
 IMPLEMENT_SETTING_AUTO_ENUM(CleanDeletedRows, ErrorCodes::BAD_ARGUMENTS)
-
-IMPLEMENT_SETTING_MULTI_ENUM(MySQLDataTypesSupport, ErrorCodes::UNKNOWN_MYSQL_DATATYPES_SUPPORT_LEVEL,
-    {{"decimal",    MySQLDataTypesSupport::DECIMAL},
-     {"datetime64", MySQLDataTypesSupport::DATETIME64},
-     {"date2Date32", MySQLDataTypesSupport::DATE2DATE32},
-     {"date2String", MySQLDataTypesSupport::DATE2STRING}})
 
 IMPLEMENT_SETTING_ENUM(SetOperationMode, ErrorCodes::UNKNOWN_UNION,
     {{"",         SetOperationMode::Unspecified},

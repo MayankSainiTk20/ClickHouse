@@ -81,11 +81,6 @@ private:
     String scrambled_password;
 };
 
-class MySQLNative41Credentials : public CredentialsWithScramble
-{
-    using CredentialsWithScramble::CredentialsWithScramble;
-};
-
 class SshCredentials : public Credentials
 {
 public:
