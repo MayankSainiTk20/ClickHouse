@@ -103,9 +103,6 @@
 #include <Storages/System/StorageSystemStackTrace.h>
 #endif
 
-#if USE_ROCKSDB
-#include <Storages/RocksDB/StorageSystemRocksDB.h>
-#endif
 
 
 
@@ -172,9 +169,6 @@ void attachSystemTablesServer(ContextPtr context, IDatabase & system_database, b
 #endif
 #ifdef OS_LINUX
     attachNoDescription<StorageSystemStackTrace>(context, system_database, "stack_trace", "Allows to obtain an unsymbolized stacktrace from all the threads of the server process.");
-#endif
-#if USE_ROCKSDB
-    attach<StorageSystemRocksDB>(context, system_database, "rocksdb", "Contains a list of metrics exposed from embedded RocksDB.");
 #endif
 
     attachNoDescription<StorageSystemParts>(context, system_database, "parts", "Contains a list of currently existing (both active and inactive) parts of all *-MergeTree tables. Each part is represented by a single row.");

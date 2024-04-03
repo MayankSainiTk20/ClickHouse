@@ -46,7 +46,6 @@ const char * auto_config_build[]
     "USE_FILELOG", "@USE_FILELOG@",
     "USE_BZIP2", "@USE_BZIP2@",
     "USE_AMQPCPP", "@USE_AMQPCPP@",
-    "USE_ROCKSDB", "@USE_ROCKSDB@",
     "USE_NURAFT", "@USE_NURAFT@",
     "USE_NLP", "@USE_NLP@",
     "USE_LIBURING", "@USE_LIBURING@",
