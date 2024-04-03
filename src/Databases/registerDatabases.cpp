@@ -19,9 +19,6 @@ void registerDatabasePostgreSQL(DatabaseFactory & factory);
 void registerDatabaseMaterializedPostgreSQL(DatabaseFactory & factory);
 #endif
 
-#if USE_SQLITE
-void registerDatabaseSQLite(DatabaseFactory & factory);
-#endif
 
 #if USE_HDFS
 void registerDatabaseHDFS(DatabaseFactory & factory);
@@ -43,9 +40,6 @@ void registerDatabases()
     registerDatabaseMaterializedPostgreSQL(factory);
 #endif
 
-#if USE_SQLITE
-    registerDatabaseSQLite(factory);
-#endif
 
 #if USE_HDFS
     registerDatabaseHDFS(factory);

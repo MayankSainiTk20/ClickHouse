@@ -50,7 +50,6 @@ const char * auto_config_build[]
     "USE_NURAFT", "@USE_NURAFT@",
     "USE_NLP", "@USE_NLP@",
     "USE_LIBURING", "@USE_LIBURING@",
-    "USE_SQLITE", "@USE_SQLITE@",
     "USE_LIBPQXX", "@USE_LIBPQXX@",
     "USE_AWS_S3", "@USE_AWS_S3@",
     "USE_CASSANDRA", "@USE_CASSANDRA@",
