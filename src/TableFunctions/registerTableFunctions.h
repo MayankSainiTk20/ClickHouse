@@ -40,10 +40,6 @@ void registerTableFunctionJDBC(TableFunctionFactory & factory);
 void registerTableFunctionView(TableFunctionFactory & factory);
 void registerTableFunctionViewIfPermitted(TableFunctionFactory & factory);
 
-#if USE_LIBPQXX
-void registerTableFunctionPostgreSQL(TableFunctionFactory & factory);
-#endif
-
 
 void registerTableFunctionDictionary(TableFunctionFactory & factory);
 

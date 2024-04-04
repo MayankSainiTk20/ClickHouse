@@ -13,12 +13,6 @@ void registerDatabaseLazy(DatabaseFactory & factory);
 void registerDatabaseFilesystem(DatabaseFactory & factory);
 void registerDatabaseReplicated(DatabaseFactory & factory);
 
-#if USE_LIBPQXX
-void registerDatabasePostgreSQL(DatabaseFactory & factory);
-
-void registerDatabaseMaterializedPostgreSQL(DatabaseFactory & factory);
-#endif
-
 
 #if USE_HDFS
 void registerDatabaseHDFS(DatabaseFactory & factory);
@@ -34,11 +28,6 @@ void registerDatabases()
     registerDatabaseLazy(factory);
     registerDatabaseFilesystem(factory);
     registerDatabaseReplicated(factory);
-
-#if USE_LIBPQXX
-    registerDatabasePostgreSQL(factory);
-    registerDatabaseMaterializedPostgreSQL(factory);
-#endif
 
 
 #if USE_HDFS

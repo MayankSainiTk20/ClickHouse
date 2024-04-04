@@ -43,10 +43,6 @@ void registerTableFunctions()
     registerTableFunctionView(factory);
     registerTableFunctionViewIfPermitted(factory);
 
-#if USE_LIBPQXX
-    registerTableFunctionPostgreSQL(factory);
-#endif
-
 
     registerTableFunctionDictionary(factory);
 

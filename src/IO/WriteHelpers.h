@@ -621,13 +621,6 @@ inline void writeQuotedString(std::string_view ref, WriteBuffer & buf)
     writeAnyQuotedString<'\''>(ref.data(), ref.data() + ref.size(), buf);
 }
 
-inline void writeQuotedStringPostgreSQL(std::string_view ref, WriteBuffer & buf)
-{
-    writeChar('\'', buf);
-    writeAnyEscapedString<'\'', true, false>(ref.data(), ref.data() + ref.size(), buf);
-    writeChar('\'', buf);
-}
-
 inline void writeDoubleQuotedString(const String & s, WriteBuffer & buf)
 {
     writeAnyQuotedString<'"'>(s, buf);

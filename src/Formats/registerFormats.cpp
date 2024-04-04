@@ -88,7 +88,6 @@ void registerOutputFormatXML(FormatFactory & factory);
 void registerOutputFormatODBCDriver2(FormatFactory & factory);
 void registerOutputFormatNull(FormatFactory & factory);
 void registerOutputFormatMarkdown(FormatFactory & factory);
-void registerOutputFormatPostgreSQLWire(FormatFactory & factory);
 void registerOutputFormatPrometheus(FormatFactory & factory);
 void registerOutputFormatSQLInsert(FormatFactory & factory);
 
@@ -228,7 +227,6 @@ void registerFormats()
     registerOutputFormatODBCDriver2(factory);
     registerOutputFormatNull(factory);
     registerOutputFormatMarkdown(factory);
-    registerOutputFormatPostgreSQLWire(factory);
     registerOutputFormatCapnProto(factory);
     registerOutputFormatPrometheus(factory);
     registerOutputFormatSQLInsert(factory);

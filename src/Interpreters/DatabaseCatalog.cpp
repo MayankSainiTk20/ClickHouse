@@ -29,11 +29,6 @@
 #include "Interpreters/Context_fwd.h"
 #include "config.h"
 
-#if USE_LIBPQXX
-#    include <Databases/PostgreSQL/DatabaseMaterializedPostgreSQL.h>
-#    include <Storages/PostgreSQL/StorageMaterializedPostgreSQL.h>
-#endif
-
 namespace CurrentMetrics
 {
     extern const Metric TablesToDropQueueSize;
@@ -351,15 +346,6 @@ DatabaseAndTable DatabaseCatalog::getTableImpl(
 
         /// Wait for table to be started because we are going to return StoragePtr
         db_and_table.first->waitTableStarted(table_id.getTableName());
-
-#if USE_LIBPQXX
-        if (!context_->isInternalQuery() && (db_and_table.first->getEngineName() == "MaterializedPostgreSQL"))
-        {
-            db_and_table.second = std::make_shared<StorageMaterializedPostgreSQL>(std::move(db_and_table.second), getContext(),
-                                        assert_cast<const DatabaseMaterializedPostgreSQL *>(db_and_table.first.get())->getPostgreSQLDatabaseName(),
-                                        db_and_table.second->getStorageID().table_name);
-        }
-#endif
 
         return db_and_table;
     }

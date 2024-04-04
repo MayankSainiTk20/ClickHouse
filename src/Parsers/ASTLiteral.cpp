@@ -129,31 +129,11 @@ void ASTLiteral::appendColumnNameImplLegacy(WriteBuffer & ostr) const
     }
 }
 
-/// Use different rules for escaping backslashes and quotes
-class FieldVisitorToStringPostgreSQL : public StaticVisitor<String>
-{
-public:
-    template<typename T>
-    String operator() (const T & x) const { return visitor(x); }
-
-private:
-    FieldVisitorToString visitor;
-};
-
-template<>
-String FieldVisitorToStringPostgreSQL::operator() (const String & x) const
-{
-    WriteBufferFromOwnString wb;
-    writeQuotedStringPostgreSQL(x, wb);
-    return wb.str();
-}
 
 void ASTLiteral::formatImplWithoutAlias(const FormatSettings & settings, IAST::FormatState &, IAST::FormatStateStacked) const
 {
     if (settings.literal_escaping_style == LiteralEscapingStyle::Regular)
         settings.ostr << applyVisitor(FieldVisitorToString(), value);
-    else
-        settings.ostr << applyVisitor(FieldVisitorToStringPostgreSQL(), value);
 }
 
 }

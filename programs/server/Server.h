@@ -108,7 +108,7 @@ private:
         AsynchronousMetrics & async_metrics,
         std::vector<ProtocolServerAdapter> & servers,
         bool start_servers = false,
-        const ServerType & server_type = ServerType(ServerType::Type::QUERIES_ALL));
+        const ServerType & server_type = ServerType(ServerType::Type::TCP));
 
     void createInterserverServers(
         Poco::Util::AbstractConfiguration & config,
@@ -118,7 +118,7 @@ private:
         AsynchronousMetrics & async_metrics,
         std::vector<ProtocolServerAdapter> & servers,
         bool start_servers = false,
-        const ServerType & server_type = ServerType(ServerType::Type::QUERIES_ALL));
+        const ServerType & server_type = ServerType(ServerType::Type::TCP));
 
     void updateServers(
         Poco::Util::AbstractConfiguration & config,
