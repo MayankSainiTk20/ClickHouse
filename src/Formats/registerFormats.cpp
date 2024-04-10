@@ -15,9 +15,6 @@ void registerFileSegmentationEngineRegexp(FormatFactory & factory);
 void registerFileSegmentationEngineJSONAsString(FormatFactory & factory);
 void registerFileSegmentationEngineJSONAsObject(FormatFactory & factory);
 void registerFileSegmentationEngineJSONCompactEachRow(FormatFactory & factory);
-#if USE_HIVE
-void registerFileSegmentationEngineHiveText(FormatFactory & factory);
-#endif
 void registerFileSegmentationEngineLineAsString(FormatFactory & factory);
 void registerFileSegmentationEngineBSONEachRow(FormatFactory & factory);
 
@@ -102,9 +99,6 @@ void registerInputFormatDWARF(FormatFactory & factory);
 void registerInputFormatOne(FormatFactory & factory);
 void registerInputFormatNpy(FormatFactory & factory);
 
-#if USE_HIVE
-void registerInputFormatHiveText(FormatFactory & factory);
-#endif
 
 /// Non trivial prefix and suffix checkers for disabling parallel parsing.
 void registerNonTrivialPrefixAndSuffixCheckerJSONEachRow(FormatFactory & factory);
@@ -158,9 +152,6 @@ void registerFormats()
     registerFileSegmentationEngineJSONAsString(factory);
     registerFileSegmentationEngineJSONAsObject(factory);
     registerFileSegmentationEngineJSONCompactEachRow(factory);
-#if USE_HIVE
-    registerFileSegmentationEngineHiveText(factory);
-#endif
     registerFileSegmentationEngineLineAsString(factory);
     registerFileSegmentationEngineBSONEachRow(factory);
 
@@ -235,9 +226,6 @@ void registerFormats()
     registerInputFormatJSONAsString(factory);
     registerInputFormatJSONAsObject(factory);
     registerInputFormatLineAsString(factory);
-#if USE_HIVE
-    registerInputFormatHiveText(factory);
-#endif
 
     registerInputFormatCapnProto(factory);
 

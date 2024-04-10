@@ -51,7 +51,6 @@
 #include <Storages/Freeze.h>
 #include <Storages/StorageFactory.h>
 #include <Storages/StorageFile.h>
-#include <Storages/StorageURL.h>
 #include <Storages/MaterializedView/RefreshTask.h>
 #include <Storages/HDFS/StorageHDFS.h>
 #include <Storages/System/StorageSystemFilesystemCache.h>
@@ -480,8 +479,6 @@ BlockIO InterpreterSystemQuery::execute()
             if (caches_to_drop.contains("HDFS"))
                 StorageHDFS::getSchemaCache(getContext()).clear();
 #endif
-            if (caches_to_drop.contains("URL"))
-                StorageURL::getSchemaCache(getContext()).clear();
             break;
         }
         case Type::DROP_FORMAT_SCHEMA_CACHE:

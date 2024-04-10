@@ -3,7 +3,6 @@
 #include <Client/Connection.h>
 #include <Interpreters/Cluster.h>
 #include <Storages/IStorageCluster.h>
-#include <Storages/StorageURL.h>
 
 #include <memory>
 #include <optional>

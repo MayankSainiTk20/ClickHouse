@@ -1,6 +1,5 @@
 #include <Storages/System/StorageSystemSchemaInferenceCache.h>
 #include <Storages/StorageFile.h>
-#include <Storages/StorageURL.h>
 #include <Storages/HDFS/StorageHDFS.h>
 #include <DataTypes/DataTypeString.h>
 #include <DataTypes/DataTypeDateTime.h>
@@ -76,7 +75,6 @@ void StorageSystemSchemaInferenceCache::fillData(MutableColumns & res_columns, C
 #if USE_HDFS
     fillDataImpl(res_columns, StorageHDFS::getSchemaCache(context), "HDFS");
 #endif
-    fillDataImpl(res_columns, StorageURL::getSchemaCache(context), "URL");
 }
 
 }
